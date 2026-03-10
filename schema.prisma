@@ -39,23 +39,23 @@ model project_task {
   progress                    Int      @default(0)
   status                      String?
   workflow_definition_id      String?
-  current_process_instance_id String?
+  current_workflow_instance_id String?
   created_at                  DateTime @default(now())
   updated_at                  DateTime @updatedAt
 
-  workflow_definition         bpmn_process_definition? @relation("task_workflow_definition", fields: [workflow_definition_id], references: [id])
-  workflow_instances          bpmn_process_instance[]  @relation("task_workflow_instances")
+  workflow_definition         bpmn_workflow_definition? @relation("task_workflow_definition", fields: [workflow_definition_id], references: [id])
+  workflow_instances          bpmn_workflow_instance[]  @relation("task_workflow_instances")
 
   @@index([project_id])
   @@index([parent_id])
   @@index([workflow_definition_id])
-  @@index([current_process_instance_id])
+  @@index([current_workflow_instance_id])
 }
 
-model bpmn_process_definition {
+model bpmn_workflow_definition {
   id            String                 @id @default(uuid())
   workspace_id  String
-  process_key   String
+  workflow_key   String
   name          String
   version       Int
   status        bpmn_definition_status @default(DRAFT)
@@ -64,14 +64,14 @@ model bpmn_process_definition {
   created_at    DateTime               @default(now())
   updated_at    DateTime               @updatedAt
 
-  process_instances bpmn_process_instance[]
+  workflow_instances bpmn_workflow_instance[]
   project_tasks     project_task[]          @relation("task_workflow_definition")
 
-  @@unique([workspace_id, process_key, version])
-  @@index([workspace_id, process_key, status])
+  @@unique([workspace_id, workflow_key, version])
+  @@index([workspace_id, workflow_key, status])
 }
 
-model bpmn_process_instance {
+model bpmn_workflow_instance {
   id               String               @id @default(uuid())
   workspace_id     String
   definition_id    String
@@ -82,7 +82,7 @@ model bpmn_process_instance {
   ended_at         DateTime?
   variables_json   Json?
 
-  definition       bpmn_process_definition @relation(fields: [definition_id], references: [id])
+  definition       bpmn_workflow_definition @relation(fields: [definition_id], references: [id])
   project_task     project_task?           @relation("task_workflow_instances", fields: [project_task_id], references: [id])
   activities       bpmn_activity_instance[]
 
@@ -94,7 +94,7 @@ model bpmn_process_instance {
 
 model bpmn_activity_instance {
   id                  String               @id @default(uuid())
-  process_instance_id String
+  workflow_instance_id String
   element_id          String
   element_type        String
   name                String?
@@ -104,8 +104,8 @@ model bpmn_activity_instance {
   ended_at            DateTime?
   error_message       String?
 
-  process_instance    bpmn_process_instance @relation(fields: [process_instance_id], references: [id])
+  workflow_instance    bpmn_workflow_instance @relation(fields: [workflow_instance_id], references: [id])
 
-  @@index([process_instance_id, element_id])
+  @@index([workflow_instance_id, element_id])
   @@index([status, assignee])
 }

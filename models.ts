@@ -30,18 +30,18 @@ export interface project_task {
   progress: number;
   status: string | null;
   workflow_definition_id: string | null;
-  current_process_instance_id: string | null;
+  current_workflow_instance_id: string | null;
   created_at: Date;
   updated_at: Date;
 
-  workflow_definition: bpmn_process_definition | null;
-  workflow_instances: bpmn_process_instance[];
+  workflow_definition: bpmn_workflow_definition | null;
+  workflow_instances: bpmn_workflow_instance[];
 }
 
-export interface bpmn_process_definition {
+export interface bpmn_workflow_definition {
   id: string;
   workspace_id: string;
-  process_key: string;
+  workflow_key: string;
   name: string;
   version: number;
   status: BpmnDefinitionStatus;
@@ -50,11 +50,11 @@ export interface bpmn_process_definition {
   created_at: Date;
   updated_at: Date;
 
-  process_instances: bpmn_process_instance[];
+  workflow_instances: bpmn_workflow_instance[];
   project_tasks: project_task[];
 }
 
-export interface bpmn_process_instance {
+export interface bpmn_workflow_instance {
   id: string;
   workspace_id: string;
   definition_id: string;
@@ -65,14 +65,14 @@ export interface bpmn_process_instance {
   ended_at: Date | null;
   variables_json: unknown | null;
 
-  definition: bpmn_process_definition;
+  definition: bpmn_workflow_definition;
   project_task: project_task | null;
   activities: bpmn_activity_instance[];
 }
 
 export interface bpmn_activity_instance {
   id: string;
-  process_instance_id: string;
+  workflow_instance_id: string;
   element_id: string;
   element_type: string;
   name: string | null;
@@ -82,5 +82,5 @@ export interface bpmn_activity_instance {
   ended_at: Date | null;
   error_message: string | null;
 
-  process_instance: bpmn_process_instance;
+  workflow_instance: bpmn_workflow_instance;
 }
