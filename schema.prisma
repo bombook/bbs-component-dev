@@ -9,6 +9,7 @@ datasource db {
 
 model project_task {
   id          Int      @id @default(autoincrement())
+  workspace_id String?
   project_id  Int
   parent_id   Int?
   name        String
