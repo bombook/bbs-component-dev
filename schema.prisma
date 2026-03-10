@@ -8,17 +8,17 @@ datasource db {
 }
 
 model project_task {
-  id          Int      @id @default(autoincrement())
+  id           String   @id @default(uuid())
   workspace_id String?
-  project_id  Int
-  parent_id   Int?
-  name        String
-  start_date  DateTime
-  end_date    DateTime
-  progress    Int      @default(0)
-  status      String?
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  project_id   String
+  parent_id    String?
+  name         String
+  start_date   DateTime
+  end_date     DateTime
+  progress     Int      @default(0)
+  status       String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
 
   @@index([project_id])
   @@index([parent_id])
